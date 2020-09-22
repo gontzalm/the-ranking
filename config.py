@@ -15,6 +15,4 @@ HEADERS = {
     "accept": "application/vnd.github.v3+json",
 }
 OWNER = "ironhack-datalabs"
-ENDPOINTS = {
-    "users": "/users",
-}
+REPO = "datamad0820"

@@ -5,11 +5,11 @@ from src.db import db
 def create_lab():
     pass
 
-@app.route("lab/<lab_id>/search")
+@app.route("/lab/<lab_id>/search")
 def analyze_lab(lab_id):
     pass
 
-@app.route("lab/memeranking")
+@app.route("/lab/memeranking")
 def memeranking():
     pass
 
