@@ -4,7 +4,7 @@ from flask import request
 
 @app.route("/student/create/<student_name>")
 def create_student(student_name):
-    pass
+    
 
 @app.route("/student/all")
 def list_students():
