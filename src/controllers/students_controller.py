@@ -32,9 +32,11 @@ def create_student(student_name):
             "msg": f"The student {student['name']} is already in the database",
         }, 409
 
-    # TODO Fetch student's pull requests 
-    pull_requests = github.fetch_pulls(student_name)
+    # Fetch student's pull requests 
+    pulls = github.fetch_pulls(student_name)
 
+    # Add pulls to the database
+    dbops.insert_pulls(pulls)
     
     # JSON response
     response = {

@@ -1,14 +1,16 @@
 from src.db import db
 
+
 def insert_student(student):
     """Insert a student in the database if it is not already in it."""
-    # Check if student is in database
+    # Check if student already in database
     query = {"name": student["name"]}
     if db["students"].find_one(query):
         return None
 
     # Perform insert
     return db["students"].insert_one(student).inserted_id
+
 
 def fetch_students():
     """Fetch students from the database."""
@@ -20,7 +22,13 @@ def fetch_students():
 
     return list(cur)
 
-def insert_pull_requets(pull_requests):
-    """TODO Insert pull requets in the database."""
-    pass
 
+def insert_pulls(pulls):
+    """TODO Insert pull requets in the database."""
+    for pull in pulls:
+        # Check if pull already in database
+        query = {"number": pull["number"]}
+        if db["pulls"].find_one(query):
+            continue
+        
+        db["pulls"].insert_one(pull)
