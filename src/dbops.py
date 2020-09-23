@@ -2,7 +2,7 @@ from src.db import db
 
 
 def insert_student(student):
-    """Insert a student in the database if it is not already in it."""
+    """Insert student in database if not already in it."""
     # Check if student already in database
     query = {"name": student["name"]}
     if db["students"].find_one(query):
@@ -13,7 +13,7 @@ def insert_student(student):
 
 
 def fetch_students():
-    """Fetch students from the database."""
+    """Fetch students from database."""
     cur = db["students"].find({})
 
     # Check if collection is empty
@@ -24,7 +24,7 @@ def fetch_students():
 
 
 def insert_pulls(pulls):
-    """TODO Insert pull requets in the database."""
+    """Insert pull requets in database."""
     for pull in pulls:
         # Check if pull already in database
         query = {"number": pull["number"]}
@@ -32,3 +32,25 @@ def insert_pulls(pulls):
             continue
         
         db["pulls"].insert_one(pull)
+
+
+def fetch_pulls(lab_name):
+    """Fetch all pull requests of a lab from database."""
+    cur = db["pulls"].find({"lab": lab_name})
+
+    # Check if collection is empty
+    if cur.count() == 0:
+        return None
+
+    return list(cur)
+
+
+def insert_lab(lab):
+    """Insert analyzed lab in database."""
+    return db["labs"].insert_one(lab).inserted_id
+
+
+def fetch_lab(lab_id):
+    """TODO Fetch a lab analysis from database."""
+    pass
+    

@@ -109,3 +109,8 @@ def parse_pull(pull):
         "grade_time": grade_time,
         "memes": memes,
     }
+
+
+def analyze_lab(pulls):
+    """TODO Analyze lab."""
+    pass

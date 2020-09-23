@@ -5,27 +5,19 @@ from src import github, dbops
 from src.helpers import json_response 
 
 
-@app.route("/student/create/", defaults={"student_name": None})
 @app.route("/student/create/<student_name>")
 def create_student(student_name):
-    """Add a student to the database."""
-    # Bad request
-    if not student_name:
-        return {
-            "status": "Bad request",
-            "msg": "Please enter a student's github username.",
-        }, 400
-    
+    """Add student to database."""
     # Fetch student
     student = github.fetch_user(student_name)
     if not student:
         return {
             "status": "Not found",
             "msg": "Please enter a valid github username.",
-        }, 404
+        }, 400
 
     # Add student to database
-    inserted_id = dbops.insert_student(student)
+    inserted_id = dbops.insert_student(student) 
     if not inserted_id:
         return {
             "status": "Conflict",
@@ -35,7 +27,7 @@ def create_student(student_name):
     # Fetch student's pull requests 
     pulls = github.fetch_pulls(student_name)
 
-    # Add pulls to the database
+    # Add pulls to database
     dbops.insert_pulls(pulls)
     
     # JSON response
