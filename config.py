@@ -14,5 +14,8 @@ HEADERS = {
     "authorization": f"token {GITHUB_KEY}",
     "accept": "application/vnd.github.v3+json",
 }
+
+# Ironhack data
 OWNER = "ironhack-datalabs"
 REPO = "datamad0820"
+INSTRUCTORS = ["agalvezcorell", "ferrero-felipe"]

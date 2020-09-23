@@ -2,7 +2,8 @@ from flask import Response
 from bson import json_util
 import re
 import requests
-from config import HEADERS
+from config import HEADERS, INSTRUCTORS
+from datetime import datetime
 
 
 def json_response(data):
@@ -32,9 +33,44 @@ def get_additional_authors(pull):
         return additional
 
 
+def get_closed_time(pull):
+    """Get closed time of a pull request"""
+    closed = pull["closed_at"][:-1]
+    return datetime.fromisoformat(closed)
+
+
+def get_last_commit_time(pull):
+    """Get time of last commit of a pull request."""
+    url = f"{pull['pull_request']['url']}/commits"
+    res = requests.get(url, headers=HEADERS)
+    last = res.json()[-1]["commit"]["author"]["date"][:-1]
+    return datetime.fromisoformat(last)
+
+
+def get_memes(pull):
+    """Get memes of a pull request"""
+    memes = []
+    img_re = re.compile(r"https://user-images.+\.(jpeg|jpg|png)")
+
+    # Get memes of author
+    if "user-images" in pull["body"]:
+        meme = img_re.search(pull["body"]).group()
+        memes.append(meme)
+
+    # Get memes of instructor
+    res = requests.get(pull["comments_url"], headers=HEADERS)
+    comments = res.json()
+    for comment in comments:
+        if comment["user"]["login"] in INSTRUCTORS:
+            meme = img_re.search(comment["body"]).group()
+            memes.append(meme)
+    
+    return memes
+    
+    
 def parse_pull(pull):
     """TODO Parse GitHub API pull item."""
-    # Check if INVALID
+    # Check if pull is INVALID
     labels = pull["labels"]
     if labels: # pull is labeled
         if labels[0]["name"] == "INVALID":
@@ -58,14 +94,18 @@ def parse_pull(pull):
     state = pull["state"]
 
     # Grade time
-    
+    closed = get_closed_time(pull)
+    last = get_last_commit_time(pull)
+    grade_time = round((closed - last).total_seconds() / 3600, 2)
+
     # Memes
+    memes = get_memes(pull)
 
     return {
         "number": number,
         "lab": lab,
         "authors": authors,
         "state": state,
-        #"grade_time": grade_time,
-        #"memes": memes,
+        "grade_time": grade_time,
+        "memes": memes,
     }
