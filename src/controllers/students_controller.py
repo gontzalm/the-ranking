@@ -1,6 +1,6 @@
 from src.app import app
 from src.db import db
-from flask import request, Response
+from flask import request
 from src import github, dbops
 
 
