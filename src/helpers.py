@@ -6,14 +6,6 @@ from config import HEADERS, INSTRUCTORS
 from datetime import datetime
 
 
-def json_response(data):
-    """ Process data with bson serializer to avoid ObjectID to string errors in flask."""
-    return Response(
-        json_util.dumps(data),
-        mimetype='application/json'
-    )
-
-
 def get_additional_authors(pull):
     """Get additional authors from a pull request."""
     # Author(s) in body via @author
@@ -33,18 +25,18 @@ def get_additional_authors(pull):
         return additional
 
 
-def get_closed_time(pull):
-    """Get closed time of a pull request"""
-    closed = pull["closed_at"][:-1]
-    return datetime.fromisoformat(closed)
-
-
 def get_last_commit_time(pull):
     """Get time of last commit of a pull request."""
     url = f"{pull['pull_request']['url']}/commits"
     res = requests.get(url, headers=HEADERS)
     last = res.json()[-1]["commit"]["author"]["date"][:-1]
     return datetime.fromisoformat(last)
+
+
+def get_closed_time(pull):
+    """Get closed time of a pull request"""
+    closed = pull["closed_at"][:-1]
+    return datetime.fromisoformat(closed)
 
 
 def get_memes(pull):
@@ -81,7 +73,11 @@ def parse_pull(pull):
 
     # Lab
     title = pull["title"]
-    lab = re.search(r"\w+(-\w+)+", title).group()
+    lab = re.search(r"\w+(-\w+)+", title)
+    if lab:
+        lab = lab.group()
+    else: # invalid title format
+        return None
 
     # Authors
     authors = []
@@ -94,9 +90,12 @@ def parse_pull(pull):
     state = pull["state"]
 
     # Grade time
-    closed = get_closed_time(pull)
-    last = get_last_commit_time(pull)
-    grade_time = round((closed - last).total_seconds() / 3600, 2)
+    if state == "closed":
+        closed = get_closed_time(pull)
+        last = get_last_commit_time(pull)
+        grade_time = round((closed - last).total_seconds() / 3600, 2)
+    else:
+        grade_time = None
 
     # Memes
     memes = get_memes(pull)
@@ -111,6 +110,43 @@ def parse_pull(pull):
     }
 
 
-def analyze_lab(pulls):
+def analyze_lab(students, pulls):
     """TODO Analyze lab."""
-    pass
+    # State
+    open_pulls = sum([True for pull in pulls if pull["state"] == "open"])
+    closed_pulls = len(pulls) - open_pulls
+    completeness = round(closed_pulls/len(pulls)*100, 2)
+    
+    # Extract all authors and memes
+    authors = []
+    memes = []
+    for pull in pulls:
+        authors.extend(pull["authors"])
+        memes.extend(pull["memes"])
+
+    # Missing students
+    missing = []
+    for student in students:
+        if student["username"] not in authors:
+            missing.append(student["username"])
+    
+    total_missing = len(missing)
+
+    # Grade time (max)
+    if completeness == 100:
+        grade_time = max([pull["grade_time"] for pull in pulls])
+    else:
+        grade_time = None
+
+    return {
+        "name": pulls[0]["lab"],
+        "open_pulls": open_pulls,
+        "closed_pulls": closed_pulls,
+        "completeness": completeness,
+        "missing_pulls": {
+            "total": total_missing,
+            "students": missing,
+        },
+        "memes": memes,
+        "grade_time": grade_time
+    }
