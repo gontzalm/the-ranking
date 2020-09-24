@@ -4,6 +4,7 @@ import re
 import requests
 from config import HEADERS, INSTRUCTORS
 from datetime import datetime
+from random import choice
 
 
 def get_additional_authors(pull):
@@ -42,11 +43,11 @@ def get_closed_time(pull):
 def get_memes(pull):
     """Get memes of a pull request"""
     memes = []
-    img_re = re.compile(r"https://user-images.+\.(jpeg|jpg|png)")
+    img_re = re.compile(r"https://user-images[\S][^()]+")
 
     # Get memes of author
     if "user-images" in pull["body"]:
-        meme = img_re.search(pull["body"]).group()
+        meme = img_re.findall(pull["body"])[-1]
         memes.append(meme)
 
     # Get memes of instructor
@@ -54,14 +55,16 @@ def get_memes(pull):
     comments = res.json()
     for comment in comments:
         if comment["user"]["login"] in INSTRUCTORS:
-            meme = img_re.search(comment["body"]).group()
-            memes.append(meme)
+            found = img_re.findall(comment["body"])
+            if found:
+                meme = found[-1]
+                memes.append(meme)
     
     return memes
     
     
 def parse_pull(pull):
-    """TODO Parse GitHub API pull item."""
+    """Parse GitHub API pull item."""
     # Check if pull is INVALID
     labels = pull["labels"]
     if labels: # pull is labeled
@@ -111,7 +114,7 @@ def parse_pull(pull):
 
 
 def analyze_lab(students, pulls):
-    """TODO Analyze lab."""
+    """Analyze lab."""
     # State
     open_pulls = sum([True for pull in pulls if pull["state"] == "open"])
     closed_pulls = len(pulls) - open_pulls
@@ -149,4 +152,28 @@ def analyze_lab(students, pulls):
         },
         "memes": memes,
         "grade_time": grade_time
+    }
+
+
+def gen_random_meme(lab):
+    """Generate random meme from lab."""
+    return choice(list(set(lab["memes"])))
+
+
+def ranking(lab):
+    """Generate meme ranking of lab"""
+    unique_memes = list(set(lab["memes"]))
+
+    ranking = []
+    for meme in unique_memes:
+        ranking.append({
+            "meme": meme,
+            "count": unique_memes.count(meme),
+        })
+
+    ranking.sort(key=lambda x: x["count"], reverse=True)
+
+    return {
+        "lab": lab["name"],
+        "ranking": ranking
     }

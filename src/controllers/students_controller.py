@@ -47,5 +47,6 @@ def list_students():
     
     return {
         "status": "OK",
+        "msg": "Students retrieved successfuly.",
         "students": students,
     }

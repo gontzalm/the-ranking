@@ -18,4 +18,4 @@ HEADERS = {
 # Ironhack data
 OWNER = "ironhack-datalabs"
 REPO = "datamad0820"
-INSTRUCTORS = ["agalvezcorell", "ferrero-felipe"]
+INSTRUCTORS = ["agalvezcorell", "ferrero-felipe", "WHYTEWYLL"]

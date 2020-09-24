@@ -1,6 +1,6 @@
 from src.db import db
-from collections.abc import Iterable
-
+from bson.objectid import ObjectId
+from bson.errors import InvalidId
 
 def insert_student(student):
     """Insert student in database if not already in it."""
@@ -14,17 +14,15 @@ def insert_student(student):
     return str(oid)
 
 
-def fetch_students(project=None, exclude_id=True):
+def fetch_students(project=None):
     """Fetch students from database."""
-    projection = {}
+    projection = {"_id": 0}
     if project:
-        if isinstance(project, Iterable):
+        if isinstance(project, list):
             for attr in project:
                 projection[attr] = 1
         else:
             projection[project] = 1
-    if exclude_id:
-        projection["_id"] = 0
 
     cur = db["students"].find({}, projection=projection)
 
@@ -48,9 +46,8 @@ def insert_pulls(pulls):
 
 def fetch_pulls(lab_name):
     """Fetch all pull requests of a lab from database."""
-    cur = db["pulls"].find({"lab": lab_name}, {"_id": False})
+    cur = db["pulls"].find({"lab": lab_name}, projection={"_id": 0})
 
-    # Check if collection is empty
     if cur.count() == 0:
         return None
 
@@ -58,12 +55,31 @@ def fetch_pulls(lab_name):
 
 
 def insert_lab(lab):
-    """Insert analyzed lab in database."""
+    """Insert lab in database."""
     oid = db["labs"].insert_one(lab).inserted_id
     return str(oid)
 
 
 def fetch_lab(lab_id):
-    """TODO Fetch a lab analysis from database."""
-    pass
-    
+    """Fetch lab from database."""
+    try:
+        return db["labs"].find_one(ObjectId(lab_id), projection={"_id": 0})
+    except InvalidId:
+        return None
+
+def fetch_labs(project=None):
+    """Fetch all labs from database."""
+    projection = {"_id": 0}
+    if project:
+        if isinstance(project, list):
+            for attr in project:
+                projection[attr] = 1
+        else:
+            projection[project] = 1
+
+    cur = db["labs"].find({}, projection=projection)
+
+    if cur.count() == 0:
+        return None
+
+    return list(cur)
