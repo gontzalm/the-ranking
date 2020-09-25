@@ -4,6 +4,7 @@ from src import dbops
 from src.helpers import analyze_lab, gen_random_meme, ranking
 from flask import request
 
+
 @app.route("/lab/create", methods=["POST"])
 def create_lab():
     """Add lab to database."""
@@ -91,6 +92,7 @@ def meme_ranking():
         "msg": "Meme ranking generated successfully.",
         "rankings": rankings,
     }
+
 
 @app.route("/lab/<lab_id>/meme")
 def random_meme(lab_id):

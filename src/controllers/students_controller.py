@@ -4,6 +4,14 @@ from flask import request
 from src import github, dbops
 
 
+@app.route("/")
+def welcome_page():
+    return {
+        "status": "OK",
+        "msg": "Welcome to the-ranking-gontzal!"
+    }
+
+
 @app.route("/student/create/<student_name>")
 def create_student(student_name):
     """Add student to database."""
@@ -34,6 +42,7 @@ def create_student(student_name):
         "msg": f"Student {student['name']} added succesfully.",
         "student_id": inserted_id
     }
+    
 
 @app.route("/student/all")
 def list_students():

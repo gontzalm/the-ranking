@@ -2,6 +2,7 @@ from src.db import db
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
+
 def insert_student(student):
     """Insert student in database if not already in it."""
     # Check if student already in database
@@ -66,6 +67,7 @@ def fetch_lab(lab_id):
         return db["labs"].find_one(ObjectId(lab_id), projection={"_id": 0})
     except InvalidId:
         return None
+
 
 def fetch_labs(project=None):
     """Fetch all labs from database."""
