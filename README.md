@@ -8,18 +8,25 @@ Flask API project made in Ironhack August '20 cohort.
 ## Objective
 The main objective of this project is to practice developing APIs with `flask`. The secondary objectives are learning how to integrate a *MongoDB* database with an API (via `pymongo`) and practice deploying an API to the cloud using *Heroku* and *Docker*. 
 
-EXPLAIN HERE MEME RANKING ETC
+The API built allows creating users (students of the Ironhack DataMAD Aug '20 cohort) in order to analyze their pull requests for different course *laboratories*.
 
 ## Project Structure
 The structure and contents of the project are as follows:
-- `notebooks/`: Two jupyter notebooks.
-  1. `cleaning.ipynb`: Dataset cleaning process.
-  2. `enreach.ipynb`: Dataset enreaching process.
-- `src/`: Three source code files.
-  1. `cleanfuncs.py`: Functions used in the cleaning process.
-  2. `enreachfuncs.py`: Functions used in the enreaching process.
-  3. `mainhelpers.py`: Functions used in the main program.
-- `main.py`: Executable script to filter, sort and aggregate the books dataset via the CLI.
+- `docker/`: Dockerfile and package requiremets for the container.
+- `src/`: Source code files.
+  - `controllers/`: API controllers.
+    1. `labs_controller.py`: Controller for the lab endpoints.
+    2. `students_controller.py`: Controller for the student endpoints.
+  1. `app.py`: App creation.
+  2. `db.py`: Database connection.
+  3. `dbops.py`: Database operations.
+  4. `github.py`: GitHub API requests.
+  5. `helpers.py`: Helper functions.
+- `config.py`: Configuration parameters.
+- `dbsync.sh`: Script to sync the local *MongoDB* database with a *MongoDB Atlas* cluster.
+- `server.py`: App run.
+
+## API Usage
 
 ## References
 1. [`flask`](https://flask.palletsprojects.com/en/1.1.x/)
