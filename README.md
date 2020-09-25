@@ -15,13 +15,13 @@ The structure and contents of the project are as follows:
 - `docker/`: Dockerfile and package requiremets for the container.
 - `src/`: Source code files.
   - `controllers/`: API controllers.
-    1. `labs_controller.py`: Controller for the lab endpoints.
-    2. `students_controller.py`: Controller for the student endpoints.
-  1. `app.py`: App creation.
-  2. `db.py`: Database connection.
-  3. `dbops.py`: Database operations.
-  4. `github.py`: GitHub API requests.
-  5. `helpers.py`: Helper functions.
+    - `labs_controller.py`: Controller for the lab endpoints.
+    - `students_controller.py`: Controller for the student endpoints.
+  - `app.py`: App creation.
+  - `db.py`: Database connection.
+  - `dbops.py`: Database operations.
+  - `github.py`: GitHub API requests.
+  - `helpers.py`: Helper functions.
 - `config.py`: Configuration parameters.
 - `dbsync.sh`: Script to sync the local *MongoDB* database with a *MongoDB Atlas* cluster.
 - `server.py`: App run.
