@@ -6,7 +6,7 @@ Flask API project made in Ironhack August '20 cohort.
 </a>
 
 ## Objective
-The main objective of this project is to practice API development with `flask`. The secondary objectives are learning how to integrate a *MongoDB* database with an API (via `pymongo`) and practice deploying an API to the cloud using *Heroku* containerized with *Docker*. 
+The main objective of this project is to practice API development with `flask`. The secondary objectives are learning how to integrate a *MongoDB Atlas* cluster with an API (via `pymongo`) and practice deploying an API to the cloud using *Heroku* (containerized with *Docker*). 
 
 The API built allows creating users (students of the Ironhack DataMAD Aug '20 cohort) in order to analyze their pull requests for different course *laboratories*.
 
